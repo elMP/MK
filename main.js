@@ -16,21 +16,22 @@ const player2 = {
   },
 };
 
-function createPlayer() {
+function createPlayer(playerClass, playerName, lifeCount) {
   const $arena = document.querySelector(".arenas");
 
   const $player = document.createElement("div");
-  $player.classList.add("player1");
+  $player.classList.add(playerClass);
 
   const $progressbar = document.createElement("div");
-  $progressbar.classList.add("progressBar");
+  $progressbar.classList.add("progressbar");
 
   const $life = document.createElement("div");
   $life.classList.add("life");
-  $life.style.width = "100%";
+  $life.style.width = lifeCount + "%";
+
   const $name = document.createElement("div");
   $name.classList.add("name");
-  $name.innerText = "Tom";
+  $name.innerText = playerName;
   $progressbar.appendChild($life);
   $progressbar.appendChild($name);
 
@@ -46,6 +47,7 @@ function createPlayer() {
 
   $arena.appendChild($player);
 }
-player1.attack();
-player2.attack();
-createPlayer();
+// player1.attack();
+// player2.attack();
+createPlayer("player1", "SCORPION", 13);
+createPlayer("player2", "SUB-ZERO", 45);
