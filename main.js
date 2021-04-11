@@ -62,7 +62,14 @@ function changeHP(player) {
   $playerLife.style.width = player.hp + "%";
 
   if (player.hp === 0) {
-    $arena.appendChild(playerLose(player.name));
+    //иногда проигрывают оба
+    const $loseTitle = document.querySelector(".loseTitle");
+    if ($loseTitle) $loseTitle.innerText = "game over";
+    else
+      $arena.appendChild(
+        playerWins(player.player === 1 ? player2.name : player1.name)
+      );
+    $randomButton.disabled = true;
   }
 }
 
@@ -73,9 +80,14 @@ function playerLose(name) {
   return $loseTitle;
 }
 
-$randomButton.addEventListener("click", function () {
-  console.log("random fight");
+function playerWins(name) {
+  const $loseTitle = createElement("div", "loseTitle");
+  $loseTitle.innerText = name + " wins";
 
+  return $loseTitle;
+}
+
+$randomButton.addEventListener("click", function () {
   changeHP(player1);
   changeHP(player2);
 });
