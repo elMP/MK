@@ -1,4 +1,5 @@
 const $arena = document.querySelector(".arenas");
+const $randomButton = document.querySelector(".button");
 
 const player1 = {
   player: 1,
@@ -49,6 +50,33 @@ function createPlayer(playerObject) {
 
   return $player;
 }
+
+function changeHP(player) {
+  const $playerLife = document.querySelector(
+    ".player" + player.player + " .life"
+  );
+  player.hp -= 20;
+  if (player.hp < 0) player.hp = 0;
+  $playerLife.style.width = player.hp + "%";
+
+  if (player.hp === 0) {
+    $arena.appendChild(playerLose(player.name));
+  }
+}
+
+function playerLose(name) {
+  const $loseTitle = createElement("div", "loseTitle");
+  $loseTitle.innerText = name + " lose";
+
+  return $loseTitle;
+}
+
+$randomButton.addEventListener("click", function () {
+  console.log("random fight");
+
+  changeHP(player1);
+  changeHP(player2);
+});
 
 $arena.appendChild(createPlayer(player1));
 $arena.appendChild(createPlayer(player2));
