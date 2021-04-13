@@ -1,4 +1,5 @@
 const $arena = document.querySelector(".arenas");
+const $control = document.querySelector(".control");
 const $randomButton = document.querySelector(".button");
 
 const player1 = {
@@ -83,6 +84,19 @@ function showResult(name) {
   return $loseTitle;
 }
 
+function createReloadButton() {
+  $reloadDiv = createElement("div", "reloadWrap");
+  $reloadButton = createElement("button", "button");
+
+  $reloadButton.innerText = "Restart";
+  $reloadButton.addEventListener("click", function () {
+    window.location.reload();
+  });
+
+  $reloadDiv.appendChild($reloadButton);
+  $control.appendChild($reloadDiv);
+}
+
 $randomButton.addEventListener("click", function () {
   player1.changeHP(getRandom(20));
   player2.changeHP(getRandom(20));
@@ -92,6 +106,7 @@ $randomButton.addEventListener("click", function () {
 
   if (player1.hp === 0 || player2.hp === 0) {
     $randomButton.disabled = true;
+    createReloadButton();
   }
 
   if (player1.hp === 0 && player1.hp < player2.hp)
