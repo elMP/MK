@@ -10,6 +10,9 @@ const player1 = {
   attack: function () {
     console.log(this.name + " Fight...");
   },
+  changeHP: changeHP,
+  renderHP: renderHP,
+  elHP: elHP,
 };
 
 const player2 = {
@@ -21,6 +24,9 @@ const player2 = {
   attack: function () {
     console.log(this.name + " Fight...");
   },
+  changeHP: changeHP,
+  renderHP: renderHP,
+  elHP: elHP,
 };
 
 function createElement(tag, className) {
@@ -51,15 +57,22 @@ function createPlayer(playerObject) {
   return $player;
 }
 
-function changeHP(player) {
-  const $playerLife = document.querySelector(
-    ".player" + player.player + " .life"
-  );
+function elHP() {
+  return document.querySelector(".player" + this.player + " .life");
+}
 
-  player.hp -= Math.ceil(Math.random() * 20);
+function changeHP(count) {
+  this.hp -= count;
 
-  if (player.hp < 0) player.hp = 0;
-  $playerLife.style.width = player.hp + "%";
+  if (this.hp < 0) this.hp = 0;
+}
+
+function renderHP($playerLife) {
+  $playerLife.style.width = this.hp + "%";
+}
+
+function getRandom(num) {
+  return Math.ceil(Math.random() * num);
 }
 
 function showResult(name) {
@@ -70,23 +83,12 @@ function showResult(name) {
   return $loseTitle;
 }
 
-// function playerLose(name) {
-//   const $loseTitle = createElement("div", "loseTitle");
-//   $loseTitle.innerText = name + " lose";
-
-//   return $loseTitle;
-// }
-
-// function playerWins(name) {
-//   const $loseTitle = createElement("div", "loseTitle");
-//   $loseTitle.innerText = name + " wins";
-
-//   return $loseTitle;
-// }
-
 $randomButton.addEventListener("click", function () {
-  changeHP(player1);
-  changeHP(player2);
+  player1.changeHP(getRandom(20));
+  player2.changeHP(getRandom(20));
+
+  player1.renderHP(player1.elHP());
+  player2.renderHP(player2.elHP());
 
   if (player1.hp === 0 || player2.hp === 0) {
     $randomButton.disabled = true;
