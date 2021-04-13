@@ -60,36 +60,44 @@ function changeHP(player) {
 
   if (player.hp < 0) player.hp = 0;
   $playerLife.style.width = player.hp + "%";
-
-  if (player.hp === 0) {
-    //иногда проигрывают оба
-    const $loseTitle = document.querySelector(".loseTitle");
-    if ($loseTitle) $loseTitle.innerText = "game over";
-    else
-      $arena.appendChild(
-        playerWins(player.player === 1 ? player2.name : player1.name)
-      );
-    $randomButton.disabled = true;
-  }
 }
 
-function playerLose(name) {
+function showResult(name) {
   const $loseTitle = createElement("div", "loseTitle");
-  $loseTitle.innerText = name + " lose";
+  if (name) $loseTitle.innerText = name + "  wins";
+  else $loseTitle.innerText = "draw";
 
   return $loseTitle;
 }
 
-function playerWins(name) {
-  const $loseTitle = createElement("div", "loseTitle");
-  $loseTitle.innerText = name + " wins";
+// function playerLose(name) {
+//   const $loseTitle = createElement("div", "loseTitle");
+//   $loseTitle.innerText = name + " lose";
 
-  return $loseTitle;
-}
+//   return $loseTitle;
+// }
+
+// function playerWins(name) {
+//   const $loseTitle = createElement("div", "loseTitle");
+//   $loseTitle.innerText = name + " wins";
+
+//   return $loseTitle;
+// }
 
 $randomButton.addEventListener("click", function () {
   changeHP(player1);
   changeHP(player2);
+
+  if (player1.hp === 0 || player2.hp === 0) {
+    $randomButton.disabled = true;
+  }
+
+  if (player1.hp === 0 && player1.hp < player2.hp)
+    $arena.appendChild(showResult(player2.name));
+  else if (player2.hp === 0 && player2.hp < player1.hp)
+    $arena.appendChild(showResult(player1.name));
+  else if (player2.hp === 0 && player2.hp === 0)
+    $arena.appendChild(showResult());
 });
 
 $arena.appendChild(createPlayer(player1));
