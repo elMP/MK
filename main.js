@@ -94,8 +94,8 @@ function showResult(name) {
 }
 
 function createReloadButton() {
-  $reloadDiv = createElement("div", "reloadWrap");
-  $reloadButton = createElement("button", "button");
+  const $reloadDiv = createElement("div", "reloadWrap");
+  const $reloadButton = createElement("button", "button");
 
   $reloadButton.innerText = "Restart";
   $reloadButton.addEventListener("click", function () {
@@ -143,11 +143,13 @@ $form.addEventListener("submit", function (event) {
     item.checked = false;
   }
 
-  //console.log(attack);
+  //console.log(attack.defence);
   //console.log(enemy);
 
-  if (attack.defence !== enemyAttack.hit) player1.changeHP(enemy.value);
-  if (attack.hit !== enemyAttack.defence) player2.changeHP(attack.value);
+  if (attack.defence !== enemy.hit) player1.changeHP(enemy.value);
+  else console.log("block");
+  if (attack.hit !== enemy.defence) player2.changeHP(attack.value);
+  else console.log("block");
 
   player1.renderHP();
   player2.renderHP();
