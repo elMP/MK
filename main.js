@@ -68,7 +68,8 @@ function changeHP(count) {
   if (this.hp < 0) this.hp = 0;
 }
 
-function renderHP($playerLife) {
+function renderHP() {
+  $playerLife = this.elHP();
   $playerLife.style.width = this.hp + "%";
 }
 
@@ -101,8 +102,8 @@ $randomButton.addEventListener("click", function () {
   player1.changeHP(getRandom(20));
   player2.changeHP(getRandom(20));
 
-  player1.renderHP(player1.elHP());
-  player2.renderHP(player2.elHP());
+  player1.renderHP();
+  player2.renderHP();
 
   if (player1.hp === 0 || player2.hp === 0) {
     $randomButton.disabled = true;
