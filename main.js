@@ -128,28 +128,12 @@ function createReloadButton() {
 
 $form.addEventListener("submit", function (event) {
   event.preventDefault();
+
   const enemy = enemyAttack();
+  const hero = heroAttack();
 
-  const attack = {};
-  for (let item of $form) {
-    if (item.checked && item.name == "hit") {
-      attack.value = getRandom(HIT[item.value]);
-      attack.hit = item.value;
-    }
-    if (item.checked && item.name == "defence") {
-      attack.defence = item.value;
-    }
-
-    item.checked = false;
-  }
-
-  //console.log(attack.defence);
-  //console.log(enemy);
-
-  if (attack.defence !== enemy.hit) player1.changeHP(enemy.value);
-  else console.log("block");
-  if (attack.hit !== enemy.defence) player2.changeHP(attack.value);
-  else console.log("block");
+  player1.changeHP(calculateDamage(enemy.hit, hero.defence, enemy.value));
+  player2.changeHP(calculateDamage(hero.hit, enemy.defence, hero.value));
 
   player1.renderHP();
   player2.renderHP();
@@ -170,6 +154,22 @@ $form.addEventListener("submit", function (event) {
 $arena.appendChild(createPlayer(player1));
 $arena.appendChild(createPlayer(player2));
 
+function heroAttack() {
+  const attack = {};
+  for (let item of $form) {
+    if (item.checked && item.name == "hit") {
+      attack.value = getRandom(HIT[item.value]);
+      attack.hit = item.value;
+    }
+    if (item.checked && item.name == "defence") {
+      attack.defence = item.value;
+    }
+
+    item.checked = false;
+  }
+  return attack;
+}
+
 function enemyAttack() {
   const hit = ATTACK[getRandom(3) - 1];
   const defence = ATTACK[getRandom(3) - 1];
@@ -179,4 +179,12 @@ function enemyAttack() {
     hit,
     defence,
   };
+}
+
+function calculateDamage(hit, defence, value) {
+  if (defence !== hit) {
+    return value;
+  } else {
+    return 0;
+  }
 }
