@@ -52,6 +52,49 @@ const logs = {
   draw: "Ничья - это тоже победа!",
 };
 
+const createElement = (tag, className) => {
+  const $tag = document.createElement(tag);
+  if (className) $tag.classList.add(className);
+
+  return $tag;
+};
+
+const createPlayer = (playerObject) => {
+  const $player = createElement("div", "player" + playerObject.player);
+  const $progressbar = createElement("div", "progressbar");
+  const $life = createElement("div", "life");
+  const $name = createElement("div", "name");
+  const $character = createElement("div", "character");
+  const $img = createElement("img");
+
+  $life.style.width = playerObject.hp + "%";
+  $name.innerText = playerObject.name;
+  $img.src = playerObject.img;
+
+  $progressbar.appendChild($life);
+  $progressbar.appendChild($name);
+  $character.appendChild($img);
+  $player.appendChild($progressbar);
+  $player.appendChild($character);
+
+  return $player;
+};
+
+function elHP() {
+  return document.querySelector(".player" + this.player + " .life");
+}
+
+function changeHP(count) {
+  this.hp -= count;
+
+  if (this.hp < 0) this.hp = 0;
+}
+
+function renderHP() {
+  $playerLife = this.elHP();
+  $playerLife.style.width = this.hp + "%";
+}
+
 const player1 = {
   player: 1,
   name: "Tom",
@@ -80,62 +123,19 @@ const player2 = {
   elHP,
 };
 
-function createElement(tag, className) {
-  const $tag = document.createElement(tag);
-  if (className) $tag.classList.add(className);
-
-  return $tag;
-}
-
-function createPlayer(playerObject) {
-  const $player = createElement("div", "player" + playerObject.player);
-  const $progressbar = createElement("div", "progressbar");
-  const $life = createElement("div", "life");
-  const $name = createElement("div", "name");
-  const $character = createElement("div", "character");
-  const $img = createElement("img");
-
-  $life.style.width = playerObject.hp + "%";
-  $name.innerText = playerObject.name;
-  $img.src = playerObject.img;
-
-  $progressbar.appendChild($life);
-  $progressbar.appendChild($name);
-  $character.appendChild($img);
-  $player.appendChild($progressbar);
-  $player.appendChild($character);
-
-  return $player;
-}
-
-function elHP() {
-  return document.querySelector(".player" + this.player + " .life");
-}
-
-function changeHP(count) {
-  this.hp -= count;
-
-  if (this.hp < 0) this.hp = 0;
-}
-
-function renderHP() {
-  $playerLife = this.elHP();
-  $playerLife.style.width = this.hp + "%";
-}
-
-function getRandom(num) {
+const getRandom = (num) => {
   return Math.ceil(Math.random() * num);
-}
+};
 
-function showResult(name) {
+const showResult = (name) => {
   const $loseTitle = createElement("div", "loseTitle");
   if (name) $loseTitle.innerText = name + "  wins";
   else $loseTitle.innerText = "draw";
 
   return $loseTitle;
-}
+};
 
-function createReloadButton() {
+const createReloadButton = () => {
   const $reloadDiv = createElement("div", "reloadWrap");
   const $reloadButton = createElement("button", "button");
 
@@ -146,9 +146,9 @@ function createReloadButton() {
 
   $reloadDiv.appendChild($reloadButton);
   $arena.appendChild($reloadDiv);
-}
+};
 
-function getLogsLine(type, player1, player2, hitValue) {
+const getLogsLine = (type, player1, player2, hitValue) => {
   const date = new Date();
   const time = date.getHours() + ":" + date.getMinutes();
 
@@ -180,13 +180,13 @@ function getLogsLine(type, player1, player2, hitValue) {
     case "draw":
       return logs[type];
   }
-}
+};
 
-function generateLogs(type, player1, player2, hitValue) {
+const generateLogs = (type, player1, player2, hitValue) => {
   const text = getLogsLine(type, player1, player2, hitValue);
   const el = `<p>${text}</p>`;
   $chat.insertAdjacentHTML("afterbegin", el);
-}
+};
 
 $form.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -216,7 +216,7 @@ $arena.appendChild(createPlayer(player1));
 $arena.appendChild(createPlayer(player2));
 generateLogs("start", player1, player2);
 
-function heroAttack() {
+const heroAttack = () => {
   const attack = {};
   for (let item of $form) {
     if (item.checked && item.name == "hit") {
@@ -230,9 +230,9 @@ function heroAttack() {
     item.checked = false;
   }
   return attack;
-}
+};
 
-function enemyAttack() {
+const enemyAttack = () => {
   const hit = ATTACK[getRandom(3) - 1];
   const defence = ATTACK[getRandom(3) - 1];
 
@@ -241,9 +241,9 @@ function enemyAttack() {
     hit,
     defence,
   };
-}
+};
 
-function gameEnding() {
+const gameEnding = () => {
   if (player1.hp === 0 || player2.hp === 0) {
     $randomButton.disabled = true;
     createReloadButton();
@@ -259,4 +259,4 @@ function gameEnding() {
     $arena.appendChild(showResult());
     generateLogs("draw");
   }
-}
+};
