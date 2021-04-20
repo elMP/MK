@@ -60,16 +60,17 @@ const createElement = (tag, className) => {
 };
 
 const createPlayer = (playerObject) => {
-  const $player = createElement("div", "player" + playerObject.player);
+  const { player, name, img, hp } = playerObject;
+  const $player = createElement("div", "player" + player);
   const $progressbar = createElement("div", "progressbar");
   const $life = createElement("div", "life");
   const $name = createElement("div", "name");
   const $character = createElement("div", "character");
   const $img = createElement("img");
 
-  $life.style.width = playerObject.hp + "%";
-  $name.innerText = playerObject.name;
-  $img.src = playerObject.img;
+  $life.style.width = hp + "%";
+  $name.innerText = name;
+  $img.src = img;
 
   $progressbar.appendChild($life);
   $progressbar.appendChild($name);
@@ -152,31 +153,34 @@ const getLogsLine = (type, player1, player2, hitValue) => {
   const date = new Date();
   const time = date.getHours() + ":" + date.getMinutes();
 
+  const { name: AttackName } = player1;
+  const { name: DefenceName, hp: DefenceHp } = player2;
+
   switch (type) {
     case "start":
       return logs[type]
         .replace("[time]", time)
-        .replace("[player1]", player1.name)
-        .replace("[player2]", player2.name);
+        .replace("[player1]", AttackName)
+        .replace("[player2]", DefenceName);
     case "hit":
       return (
         `${time} - ` +
         logs[type][getRandom(logs[type].length) - 1]
-          .replace("[playerKick]", player1.name)
-          .replace("[playerDefence]", player2.name) +
-        ` -${hitValue} [${player2.hp}/100]`
+          .replace("[playerKick]", AttackName)
+          .replace("[playerDefence]", DefenceName) +
+        ` -${hitValue} [${DefenceHp}/100]`
       );
     case "defence":
       return (
         `${time} - ` +
         logs[type][getRandom(logs[type].length) - 1]
-          .replace("[playerKick]", player1.name)
-          .replace("[playerDefence]", player2.name)
+          .replace("[playerKick]", AttackName)
+          .replace("[playerDefence]", DefenceName)
       );
     case "end":
       return logs[type][getRandom(logs[type].length) - 1]
-        .replace("[playerWins]", player1.name)
-        .replace("[playerLose]", player2.name);
+        .replace("[playerWins]", AttackName)
+        .replace("[playerLose]", DefenceName);
     case "draw":
       return logs[type];
   }
@@ -191,20 +195,24 @@ const generateLogs = (type, player1, player2, hitValue) => {
 $form.addEventListener("submit", function (event) {
   event.preventDefault();
 
-  const enemy = enemyAttack();
-  const hero = heroAttack();
+  const {
+    hit: enemyHit,
+    defence: enemyDefence,
+    value: enemyValue,
+  } = enemyAttack();
+  const { hit: heroHit, defence: heroDefence, value: heroValue } = heroAttack();
 
-  if (hero.defence !== enemy.hit) {
-    player1.changeHP(enemy.value);
+  if (heroDefence !== enemyHit) {
+    player1.changeHP(enemyValue);
     player1.renderHP();
-    generateLogs("hit", player2, player1, enemy.value);
+    generateLogs("hit", player2, player1, enemyValue);
   } else {
     generateLogs("defence", player2, player1);
   }
-  if (hero.hit !== enemy.defence) {
-    player2.changeHP(hero.value);
+  if (heroHit !== enemyDefence) {
+    player2.changeHP(heroValue);
     player2.renderHP();
-    generateLogs("hit", player1, player2, hero.value);
+    generateLogs("hit", player1, player2, heroValue);
   } else {
     generateLogs("defence", player1, player2);
   }
@@ -219,12 +227,13 @@ generateLogs("start", player1, player2);
 const heroAttack = () => {
   const attack = {};
   for (let item of $form) {
-    if (item.checked && item.name == "hit") {
+    const { name, checked, value } = item;
+    if (checked && name == "hit") {
       attack.value = getRandom(HIT[item.value]);
-      attack.hit = item.value;
+      attack.hit = value;
     }
-    if (item.checked && item.name == "defence") {
-      attack.defence = item.value;
+    if (checked && name == "defence") {
+      attack.defence = value;
     }
 
     item.checked = false;
@@ -244,18 +253,21 @@ const enemyAttack = () => {
 };
 
 const gameEnding = () => {
-  if (player1.hp === 0 || player2.hp === 0) {
+  const { hp: heroHp, name: heroName } = player1;
+  const { hp: enemyHp, name: enemyName } = player2;
+
+  if (heroHp === 0 || enemyHp === 0) {
     $randomButton.disabled = true;
     createReloadButton();
   }
 
-  if (player1.hp === 0 && player1.hp < player2.hp) {
-    $arena.appendChild(showResult(player2.name));
+  if (heroHp === 0 && heroHp < enemyHp) {
+    $arena.appendChild(showResult(enemyName));
     generateLogs("end", player2, player1);
-  } else if (player2.hp === 0 && player2.hp < player1.hp) {
-    $arena.appendChild(showResult(player1.name));
+  } else if (enemyHp === 0 && enemyHp < heroHp) {
+    $arena.appendChild(showResult(heroName));
     generateLogs("end", player1, player2);
-  } else if (player2.hp === 0 && player2.hp === 0) {
+  } else if (enemyHp === 0 && heroHp === 0) {
     $arena.appendChild(showResult());
     generateLogs("draw");
   }
