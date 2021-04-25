@@ -1,6 +1,6 @@
 import { generateLogs } from "./logs.js";
 import { createPlayer, gameEnding } from "./visualElements.js";
-import { player1, player2 } from "./players.js";
+import { Player } from "./players.js";
 import { heroAttack, enemyAttack } from "./attacks.js";
 
 const $arena = document.querySelector(".arenas");
@@ -32,6 +32,19 @@ $form.addEventListener("submit", function (event) {
   }
 
   gameEnding(player1, player2);
+});
+
+const player1 = new Player({
+  player : "1",
+  name: "Tom",
+  hp: 100,
+  img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif"
+});
+const player2 = new Player({
+  player : "2",
+  name: "Harry",
+  hp: 100,
+  img: "http://reactmarathon-api.herokuapp.com/assets/liukang.gif"
 });
 
 $arena.appendChild(createPlayer(player1));
