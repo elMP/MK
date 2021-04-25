@@ -1,42 +1,24 @@
-export const player1 = {
-  player: 1,
-  name: "Tom",
-  hp: 100,
-  img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif",
-  weapon: ["копье"],
-  attack: function () {
-    console.log(this.name + " Fight...");
-  },
-  changeHP,
-  renderHP,
-  elHP,
-};
+export class Player {
+  constructor(props) {
+    this.player = props.player;
+    this.name = props.name;
+    this.hp = props.hp;
+    this.img = props.img;
+  }
 
-export const player2 = {
-  player: 2,
-  name: "Harry",
-  hp: 100,
-  img: "http://reactmarathon-api.herokuapp.com/assets/liukang.gif",
-  weapon: ["wand"],
-  attack: function () {
-    console.log(this.name + " Fight...");
-  },
-  changeHP,
-  renderHP,
-  elHP,
-};
+  elHP = () => {
+    return document.querySelector(".player" + this.player + " .life");
+  }
 
-function elHP() {
-  return document.querySelector(".player" + this.player + " .life");
-}
+  changeHP = (count) => {
+    this.hp -= count;
 
-function changeHP(count) {
-  this.hp -= count;
+    if (this.hp < 0) this.hp = 0;
+  }
 
-  if (this.hp < 0) this.hp = 0;
-}
+  renderHP = () => {
+    const $playerLife = this.elHP();
+    $playerLife.style.width = this.hp + "%";
+ }
 
-function renderHP() {
-  const $playerLife = this.elHP();
-  $playerLife.style.width = this.hp + "%";
 }
